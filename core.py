@@ -21,58 +21,60 @@ for file in xml_dir_path.iterdir():
 
         # XML full tree level
 
-        print(f"\nParsing {file}")  # printing will be replaced by logger
-        root = etree.parse(file)  # raises IOError if file nonexistent/unreadable; raise error.XMLSyntaxError if not well-formed
+        with open(file, "r") as xml_file:  # open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None, closefd=True, opener=None)
 
-        # find events within listEvents
+            print(f"\nParsing {file}")  # printing will be replaced by logger
+            root = etree.parse(xml_file)  # raises IOError if file nonexistent/unreadable; raise error.XMLSyntaxError if not well-formed
 
-        event_list = root.xpath("//tei:listEvent/tei:event", namespaces=NS)  # target all events within all listEvents, all events are taken to be relevant
+            # find events within listEvents
 
-        if event_list:
-            print(f"TEI event elements within listEvent detected: {event_list}")
-        else:
-            print("No TEI event elements within listEvent detected")
+            event_list = root.xpath("//tei:listEvent/tei:event", namespaces=NS)  # target all events within all listEvents, all events are taken to be relevant
 
-        # get to individual event
+            if event_list:
+                print(f"TEI event elements within listEvent detected: {event_list}")
+            else:
+                print("No TEI event elements within listEvent detected")
 
-        for event in event_list:
-            print("\n>>> single event:")
-            print(event.tag, event.attrib, event.text)            
+            # get to individual event
 
-            # get to elements of individual event tree - this is a very unelegant and limited layered loop, to be replaced by recursion
+            for event in event_list:
+                print("\n>>> single event:")
+                print(event.tag, event.attrib, event.text)            
 
-            # for element in list(event):
-            #     print("\n>>> single elements within single event:")
-            #     print(element.tag, element.attrib, element.text)
+                # get to elements of individual event tree - this is a very unelegant and limited layered loop, to be replaced by recursion
 
-            #     if list(element):
-            #         for child1 in list(element):
-            #             print("\n>>> single direct children of single elements within single events:")
-            #             print(child1.tag, child1.attrib, child1.text)
+                # for element in list(event):
+                #     print("\n>>> single elements within single event:")
+                #     print(element.tag, element.attrib, element.text)
 
-            #             if list(child1):
-            #                 for child2 in list(child1):
-            #                     print("\n>>> single grandchildren of direct children of elements within events:")
-            #                     print(child2.tag, child2.attrib, child2.text)
+                #     if list(element):
+                #         for child1 in list(element):
+                #             print("\n>>> single direct children of single elements within single events:")
+                #             print(child1.tag, child1.attrib, child1.text)
 
-            #                 if list(child2):
-            #                     for child3 in list(child2):
-            #                         print("\n>>> single grandchildren of direct children of elements within events:")
-            #                         print(child3.tag, child3.attrib, child3.text)   
+                #             if list(child1):
+                #                 for child2 in list(child1):
+                #                     print("\n>>> single grandchildren of direct children of elements within events:")
+                #                     print(child2.tag, child2.attrib, child2.text)
 
-            # try recursion instead
+                #                 if list(child2):
+                #                     for child3 in list(child2):
+                #                         print("\n>>> single grandchildren of direct children of elements within events:")
+                #                         print(child3.tag, child3.attrib, child3.text)   
 
-            def get_elements(layer):
-                if list(layer):
-                    for element in list(layer):
-                        print(element.tag, element.attrib, element.text)
-                        if list(element):
-                            get_elements(element)
+                # try recursion instead
 
-            get_elements(event)
+                def get_elements(layer):
+                    if list(layer):
+                        for element in list(layer):
+                            print(element.tag, element.attrib, element.text)
+                            if list(element):
+                                get_elements(element)
+
+                get_elements(event)
 
 
-        print("\n#########")
-      
+            print("\n#########")
+        
 
     
