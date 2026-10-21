@@ -1,10 +1,15 @@
 # import libraries
+# from collections import defaultdict  # for dictionary of events yet unknown
 from pathlib import Path  # for filepath operations
+
 from lxml import etree  # for XML parsing
 
 # some constants/variables
 XML_DIR = "../../../Sandbox/some-xml-folder"  # this will be a build() parameter one day
 NS = {"tei": "http://www.tei-c.org/ns/1.0"}
+
+# create dictionary to hold event data, as temporary storage for event data
+# event_dict = defaultdict(list)
 
 # transform and check XML directory path
 xml_dir_path = Path(XML_DIR)
@@ -39,7 +44,8 @@ for file in xml_dir_path.iterdir():
 
             for event in event_list:
                 print("\n>>> single event:")
-                print(event.tag, event.attrib, event.text)            
+                print(event.tag, event.attrib, event.text)
+                # event_dict.append()
 
                 # get to elements of individual event tree - this is a very unelegant and limited layered loop, to be replaced by recursion
 
@@ -65,9 +71,15 @@ for file in xml_dir_path.iterdir():
                 # try recursion instead
 
                 def get_elements(layer):
+                    # loop through elements within event node if there are any:
                     if list(layer):
                         for element in list(layer):
-                            print(element.tag, element.attrib, element.text)
+                            print(f"element: {element.tag}, {element.attrib}, {element.text}")
+                            # loop through attributes of each element if there are any:
+                            if element.attrib:
+                                for attribute in element.attrib:
+                                    print(f"attribute: {attribute}, {element.attrib[attribute]}")
+                            # recurse on elements within elements within event node if there are any:
                             if list(element):
                                 get_elements(element)
 
